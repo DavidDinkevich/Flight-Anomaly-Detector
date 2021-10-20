@@ -33,8 +33,6 @@ float var(float *x, int size){
     // Calculate variance
     float mu = sum / (float) size;
     return (sumSquares / (float) size) - (mu * mu);
-//    float mu = (1 / (float) size) * sum;
-//    return (1 / (float) size) * sumSquares - mu * mu;
 }
 
 // returns the covariance of X and Y
