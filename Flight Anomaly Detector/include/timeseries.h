@@ -18,25 +18,15 @@ private: // HELPER FUNCTIONS
     void loadFile(const char *CSVfileName);
 public:
 
-	explicit TimeSeries(const char *CSVfileName) {
-        loadFile(CSVfileName);
-    }
+	explicit TimeSeries(const char *CSVfileName);
 
     std::vector<std::string> getFeatureNames() const;
 
-    std::vector<float> getFeatureValues(const char *name) const {
-        return { table.at(std::string(name)) };
-    }
+    std::vector<float> getFeatureValues(const char *name) const;
 
-    int getNumFeatures() const {
-        return (int) table.size();
-    }
+    int getNumFeatures() const;
 
-    int getDataLength() const {
-        if (getNumFeatures() == 0)
-            return 0;
-        return (int) table.at(featureNames[0]).size();
-    }
+    int getDataLength() const;
 
 
 };

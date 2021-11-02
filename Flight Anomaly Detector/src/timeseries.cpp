@@ -2,6 +2,11 @@
 
 using namespace std;
 
+TimeSeries::TimeSeries(const char *CSVfileName) {
+    loadFile(CSVfileName);
+}
+
+
 vector<string> TimeSeries::split(const std::string& str, const char * delim) {
     vector<string> chunks;
     string line = str;
@@ -54,3 +59,18 @@ void TimeSeries::loadFile(const char *CSVfileName) {
 
     is.close();
 }
+
+std::vector<float> TimeSeries::getFeatureValues(const char *name) const {
+    return { table.at(std::string(name)) };
+}
+
+int TimeSeries::getNumFeatures() const {
+    return (int) table.size();
+}
+
+int TimeSeries::getDataLength() const {
+    if (getNumFeatures() == 0)
+        return 0;
+    return (int) table.at(featureNames[0]).size();
+}
+
