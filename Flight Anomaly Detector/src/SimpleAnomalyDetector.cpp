@@ -21,7 +21,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
             // Data vector of feature at index j
             vector<float> f2Data = ts.getFeatureValues(names[j].c_str());
             float corr = fabs(pearson(f1Data.data(), f2Data.data(), ts.getDataLength()));
-            if (corr > maxCorr) {
+            if (corr > maxCorr && corr <= 1.0f) {
                 maxCorr = corr;
                 corrFeatureIndex = j;
             }
