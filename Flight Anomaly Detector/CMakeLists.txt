@@ -11,4 +11,5 @@ add_executable(
         include/timeseries.h src/timeseries.cpp
         include/AnomalyDetector.h
         include/minCircle.h src/minCircle.cpp
+        include/HybridAnomalyDetector.h src/HybridAnomalyDetector.cpp
 )
