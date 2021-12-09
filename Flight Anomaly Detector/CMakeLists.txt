@@ -9,4 +9,6 @@ add_executable(
         src/anomaly_detection_util.cpp include/anomaly_detection_util.h
         include/SimpleAnomalyDetector.h src/SimpleAnomalyDetector.cpp
         include/timeseries.h src/timeseries.cpp
-        include/AnomalyDetector.h)
+        include/AnomalyDetector.h
+        include/minCircle.h src/minCircle.cpp
+)
