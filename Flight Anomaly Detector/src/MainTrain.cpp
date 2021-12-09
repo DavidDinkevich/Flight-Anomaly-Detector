@@ -24,6 +24,10 @@ Point** generate(Point center,int R, size_t size){
 
 
 int main(){
+    //Point* pts[3] = {new Point{5,-2}, new Point{0, 1} , new Point{4, 4}};
+    //Circle res = findMinCircle(pts, 3);
+    //cout << "(x, y), r -> " << res.center.x << ", " << res.center.y << ", " << res.radius << endl;
+//    cout << "Beginning..." << endl;
     srand (time(NULL));
     const size_t N=250;
     float R=10+rand()%1000;
@@ -33,11 +37,14 @@ int main(){
 
     // your working copy
     Point** ps_copy=new Point*[N];
-    for(size_t i=0;i<N;i++)
-        ps_copy[i]=new Point(ps[i]->x,ps[i]->y);
+    for(size_t i=0;i<N;i++) {
+        ps_copy[i] = new Point(ps[i]->x, ps[i]->y);
+//        cout << "Point: " << ps[i]->x << ", " << ps[i]->y << endl;
+    }
 
     auto start = high_resolution_clock::now();
     Circle c=findMinCircle(ps_copy,N);
+//    cout << "Got circle: " << c.center.x << ", " << c.center.y << ", " << c.radius << endl;
     auto stop = high_resolution_clock::now();
 
     if((int)c.radius>(int)R)
