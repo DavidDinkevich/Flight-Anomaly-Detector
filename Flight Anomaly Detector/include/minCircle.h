@@ -7,6 +7,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include "anomaly_detection_util.h"
+#include <cmath>
 
 using namespace std;
 
@@ -24,5 +25,16 @@ public:
 Circle findMinCircle(Point** points,size_t size);
 
 // you can add here additional methods
+inline float distSq(const Point& a, const Point& b);
+inline float dist(const Point& a, const Point& b);
+
+float distSq(const Point& a, const Point& b) {
+    return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+}
+
+float dist(const Point& a, const Point& b) {
+    return sqrtf(distSq(a, b));
+}
+
 
 #endif /* MINCIRCLE_H_ */

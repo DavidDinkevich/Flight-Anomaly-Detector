@@ -9,8 +9,7 @@ SimpleAnomalyDetector::SimpleAnomalyDetector() {
 SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 }
 
-
-void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
+void SimpleAnomalyDetector::calculateAllCorrelations(const TimeSeries &ts) {
     vector<string> names = ts.getFeatureNames();
     for (int i = 0; i < ts.getNumFeatures(); i++) {
         float maxCorr = 0;
@@ -26,10 +25,22 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
                 corrFeatureIndex = j;
             }
         }
-        const float MIN_CORR = 0.9f;
-        if (corrFeatureIndex >= 0 && maxCorr >= MIN_CORR) {
+        if (corrFeatureIndex >= 0) {
+            CorrelatedPair p = {names[i], names[corrFeatureIndex], maxCorr};
+            allCorrs.emplace_back(p);
+        }
+    }
+}
+
+void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
+    calculateAllCorrelations(ts);
+    const float MIN_CORR = 0.9f;
+    for (const auto& corrPair : allCorrs) {
+        if (corrPair.corrlation >= MIN_CORR) {
+            // Data vector of feature at index i
+            vector<float> f1Data = ts.getFeatureValues(corrPair.feature1.c_str());
             // Data vector of feature at index corrFeatureIndex
-            vector<float> f2Data = ts.getFeatureValues(names[corrFeatureIndex].data());
+            vector<float> f2Data = ts.getFeatureValues(corrPair.feature2.data());
             // Create points array
             vector<Point*> points(ts.getDataLength());
             for (int j = 0; j < ts.getDataLength(); j++) {
@@ -43,13 +54,15 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
             }
             // Add correlation
             cf.emplace_back(correlatedFeatures{
-                names[i], names[corrFeatureIndex], maxCorr, regressionLine, maxDev * 1.2f });
+                    corrPair.feature1, corrPair.feature2, corrPair.corrlation,
+                    regressionLine, maxDev * 1.2f, {{0, 0}, 0} });
 
             // Free points array
             for (Point *p : points) {
                 delete p;
             }
         }
+
     }
 }
 
@@ -57,13 +70,16 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
     vector<AnomalyReport> reps;
     vector<string> names = ts.getFeatureNames();
     for (int r = 0; r < ts.getDataLength(); r++) {
-        for (auto& pair : cf) {
+        for (const auto& pair : cf) {
             float x = ts.getFeatureValues(pair.feature1.c_str())[r];
             float y = ts.getFeatureValues(pair.feature2.c_str())[r];
-            // If we found an anomalous point
-            if (dev({x, y}, pair.lin_reg) > pair.threshold) {
+            bool isAnomalous = false;
+            if (pair.corrlation >= 0.9f)
+                isAnomalous = dev({x, y}, pair.lin_reg) > pair.threshold;
+            else if (pair.corrlation >= 0.5f)
+                isAnomalous = dist({x, y}, pair.minCircle.center) > pair.threshold;
+            if (isAnomalous)
                 reps.emplace_back(AnomalyReport { pair.feature1 + "-" + pair.feature2, r+1 });
-            }
         }
     }
     return reps;

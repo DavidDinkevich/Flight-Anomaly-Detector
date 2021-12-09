@@ -6,14 +6,6 @@
 // ====  HELPER METHODS  ====
 // ==========================
 
-inline float distSq(const Point& a, const Point& b) {
-    return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-}
-
-inline float dist(const Point& a, const Point& b) {
-    return sqrtf(distSq(a, b));
-}
-
 Circle getTrivialCircle(const vector<Point> &points, size_t size) {
     switch (size) {
         case 0:
