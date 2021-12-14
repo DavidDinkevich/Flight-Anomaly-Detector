@@ -12,4 +12,6 @@ add_executable(
         include/AnomalyDetector.h
         include/minCircle.h src/minCircle.cpp
         include/HybridAnomalyDetector.h src/HybridAnomalyDetector.cpp
+        include/CLI.h src/CLI.cpp
+        include/commands.h
 )
