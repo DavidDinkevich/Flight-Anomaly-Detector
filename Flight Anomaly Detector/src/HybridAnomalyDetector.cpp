@@ -13,7 +13,7 @@ HybridAnomalyDetector::~HybridAnomalyDetector() {
 void HybridAnomalyDetector::learnNormal(const TimeSeries &ts) {
     SimpleAnomalyDetector::learnNormal(ts);
     for (const auto &corrPair: getAllCorrelations()) {
-        if (corrPair.corrlation >= 0.5f && corrPair.corrlation < 0.9f) {
+        if (corrPair.corrlation >= 0.5f && corrPair.corrlation < minCorrelation) {
             // Data vector of feature at index i
             vector<float> f1Data = ts.getFeatureValues(corrPair.feature1.c_str());
             // Data vector of feature at index corrFeatureIndex

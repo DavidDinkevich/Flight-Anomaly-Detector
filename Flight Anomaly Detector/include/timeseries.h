@@ -15,10 +15,11 @@ private:
     std::vector<std::string> featureNames;
 private: // HELPER FUNCTIONS
     static std::vector<std::string> split(const std::string& str, const char *delim);
-    void loadFile(const char *CSVfileName);
 public:
+    TimeSeries();
 
-	explicit TimeSeries(const char *CSVfileName);
+    explicit TimeSeries(const char *CSVfileName);
+    void loadFile(const char *CSVfileName);
 
     std::vector<std::string> getFeatureNames() const;
 

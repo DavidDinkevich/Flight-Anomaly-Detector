@@ -79,6 +79,15 @@ void check(string outputFile,string expectedOutputFile){
 
 //small test
 int main(){
+
+//    TimeSeries ts("trainFile1.csv");
+//    HybridAnomalyDetector hyb;
+//    hyb.setMinCorrelation(0.95f);
+//    hyb.learnNormal(ts);
+//    auto a = hyb.detect(ts);
+
+//    return 0;
+
     STDtest std("input.txt","output.txt");
     CLI cli(&std);
     cli.start();

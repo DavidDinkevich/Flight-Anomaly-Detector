@@ -30,14 +30,20 @@ class SimpleAnomalyDetector : public TimeSeriesAnomalyDetector {
 private:
     vector<CorrelatedPair> allCorrs;
 protected:
+    float minCorrelation = 0.9f;
     vector<correlatedFeatures> cf;
     void calculateAllCorrelations(const TimeSeries& ts);
 public:
     SimpleAnomalyDetector();
     virtual ~SimpleAnomalyDetector();
 
+
     virtual void learnNormal(const TimeSeries& ts);
     virtual vector<AnomalyReport> detect(const TimeSeries& ts);
+
+    void setMinCorrelation(float f) {
+        minCorrelation = f;
+    }
 
     vector<correlatedFeatures> getNormalModel(){
         return cf;

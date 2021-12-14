@@ -2,6 +2,8 @@
 
 using namespace std;
 
+TimeSeries::TimeSeries() = default;
+
 TimeSeries::TimeSeries(const char *CSVfileName) {
     loadFile(CSVfileName);
 }

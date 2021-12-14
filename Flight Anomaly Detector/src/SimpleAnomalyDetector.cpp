@@ -10,6 +10,7 @@ SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 }
 
 void SimpleAnomalyDetector::calculateAllCorrelations(const TimeSeries &ts) {
+    allCorrs.clear();
     vector<string> names = ts.getFeatureNames();
     for (int i = 0; i < ts.getNumFeatures(); i++) {
         float maxCorr = 0;
@@ -33,8 +34,9 @@ void SimpleAnomalyDetector::calculateAllCorrelations(const TimeSeries &ts) {
 }
 
 void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
+    cf.clear();
     calculateAllCorrelations(ts);
-    const float MIN_CORR = 0.9f;
+    const float MIN_CORR = minCorrelation;
     for (const auto& corrPair : allCorrs) {
         if (corrPair.corrlation >= MIN_CORR) {
             // Data vector of feature at index i
@@ -67,19 +69,22 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
 }
 
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
+//    cout << "Calling detect" << endl;
     vector<AnomalyReport> reps;
     vector<string> names = ts.getFeatureNames();
-    for (int r = 0; r < ts.getDataLength(); r++) {
-        for (const auto& pair : cf) {
+    for (const auto& pair : cf) {
+        for (int r = 0; r < ts.getDataLength(); r++) {
             float x = ts.getFeatureValues(pair.feature1.c_str())[r];
             float y = ts.getFeatureValues(pair.feature2.c_str())[r];
             bool isAnomalous = false;
-            if (pair.corrlation >= 0.9f)
+            if (pair.corrlation >= minCorrelation)
                 isAnomalous = dev({x, y}, pair.lin_reg) > pair.threshold;
             else if (pair.corrlation >= 0.5f)
                 isAnomalous = dist({x, y}, pair.minCircle.center) > pair.threshold;
-            if (isAnomalous)
-                reps.emplace_back(AnomalyReport { pair.feature1 + "-" + pair.feature2, r+1 });
+            if (isAnomalous) {
+                reps.emplace_back(AnomalyReport{pair.feature1 + "-" + pair.feature2, r + 1});
+//                cout << "Found anomaly: " << r + 1 << " , " << pair.feature1 << "-" << pair.feature2 << endl;
+            }
         }
     }
     return reps;

@@ -9,8 +9,15 @@
 using namespace std;
 
 class CLI {
+private: // variables
 	DefaultIO* dio;
+    float currCorrelationThreshold;
+    TimeSeries ts;
+    HybridAnomalyDetector hybridAnomalyDetector;
 	// you can add data members
+private: // methods
+    void printMenu() const;
+
 public:
 	CLI(DefaultIO* dio);
 	void start();
