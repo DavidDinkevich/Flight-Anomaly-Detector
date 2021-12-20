@@ -45,6 +45,10 @@ public:
         minCorrelation = f;
     }
 
+    float getMinCorrelation() const {
+        return minCorrelation;
+    }
+
     vector<correlatedFeatures> getNormalModel(){
         return cf;
     }
