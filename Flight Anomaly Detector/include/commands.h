@@ -1,14 +1,13 @@
 
-
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
 #include<iostream>
-#include <string.h>
-
+#include <sys/socket.h>
 #include <fstream>
 #include <vector>
 #include "HybridAnomalyDetector.h"
+#include <sstream>
 
 using namespace std;
 
@@ -33,6 +32,48 @@ public:
 
 	// you may add additional methods here
 };
+
+class SocketIO : public DefaultIO {
+private:
+    int serverFileDescriptor;
+public:
+    explicit SocketIO(int fd) : DefaultIO(), serverFileDescriptor(fd) {}
+
+    string read() override {
+        string buff;
+        char inp;
+        do {
+            recv(serverFileDescriptor, &inp, sizeof(char), 0);
+            buff += inp;
+        } while (inp != '\n');
+        return buff.substr(0, buff.size() - 1);
+    }
+
+    void write(string str) override {
+        send(serverFileDescriptor, str.c_str(), str.size(), 0);
+    }
+
+    void write(float num) override {
+        string str = to_string(num);
+        str = str.substr(0, str.find_last_not_of('0'));
+        stringstream strstream;
+        strstream << str;
+        send(serverFileDescriptor, strstream.str().c_str(), strstream.str().size(), 0);
+    }
+
+    void read(float *num) override {
+        string buff;
+        char inp;
+        recv(serverFileDescriptor, &inp, sizeof(char), 0);
+        do {
+            recv(serverFileDescriptor, &inp, sizeof(char), 0);
+            buff += inp;
+        } while (inp != '\n');
+        *num = stof(buff.substr(0, buff.size() - 1));
+    }
+
+};
+
 
 struct ReportInfo {
     vector<AnomalyReport> anoms;
@@ -103,20 +144,6 @@ public:
             thr = stof(newThresh);
         }
         hyb.setMinCorrelation(thr);
-
-
-
-//        do {
-//            string newCorr = dio->read();
-//            char *ending;
-//            float corrAsFloat = strtof(newCorr.c_str(), &ending);
-//            if (*ending != 0)
-//                dio->writeLine("please choose a value between 0 and 1.");
-//            else if (corrAsFloat >= 0.f && corrAsFloat <= 1.f) {
-//                hyb.setMinCorrelation(corrAsFloat);
-//                break;
-//            }
-//        } while (true);
     }
 };
 
