@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(Flight_Anomaly_Detector)
 include_directories(include)
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS -pthread)
 
 add_executable(
         Flight_Anomaly_Detector
@@ -14,4 +15,5 @@ add_executable(
         include/HybridAnomalyDetector.h src/HybridAnomalyDetector.cpp
         include/CLI.h src/CLI.cpp
         include/commands.h
+        include/Server.h src/Server.cpp
 )
