@@ -8,4 +8,6 @@ Clients can upload the data (e.g. altitude, speed, etc.) of a proper flight, and
   * The open/closed principle
 * Seamlessly handle multiple clients with multithreading
 * Leveraging the memory semantics of C++ to minimize latency 
-***
+
+<b>Tools:</b>
+* CMake: used to easily compile the project
